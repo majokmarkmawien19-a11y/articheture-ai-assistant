@@ -1,71 +1,79 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArchiDraft AI</title>
-    <!-- Tailwind CSS for smooth mobile UI -->
-    <script src="https://tailwindcss.com"></script>
+    <!-- Embedded styling so it looks great even if script is blocked -->
+    <style>
+        body { background-color: #111827; color: #f3f4f6; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: #1f2937; padding: 15px; text-align: center; border-bottom: 1px solid #374151; }
+        h1 { margin: 0; font-size: 1.25rem; color: #fbbf24; }
+        .subtitle { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; }
+        #settings-panel { background-color: #1f2937; padding: 15px; border-bottom: 1px solid #374151; font-size: 0.875rem; }
+        input[type="password"], input[type="text"] { width: 100%; bg-color: #374151; border: 1px solid #4b5563; border-radius: 6px; padding: 10px; color: white; box-sizing: border-box; background: #374151; }
+        main { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .card { background-color: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 15px; }
+        .user-msg { background-color: #2d3748; border: 1px solid #4a5568; border-radius: 8px; padding: 15px; align-self: flex-end; width: 90%; }
+        .pill-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; white-space: nowrap; }
+        .pill { background: #1f2937; border: 1px solid #4b5563; padding: 6px 12px; border-radius: 20px; color: #d1d5db; font-size: 0.75rem; cursor: pointer; }
+        footer { background-color: #1f2937; border-t: 1px solid #374151; padding: 12px; position: sticky; bottom: 0; }
+        .input-group { display: flex; gap: 8px; align-items: center; }
+        .btn { background-color: #f59e0b; color: #111827; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-settings { background: #4b5563; font-size: 1.2rem; padding: 8px; border-radius: 6px; border: none; color: white; cursor: pointer; }
+    </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-sans">
+<body>
 
-    <!-- Header -->
-    <header class="bg-gray-800 p-4 shadow-md text-center border-b border-gray-700">
-        <h1 class="text-xl font-bold tracking-wide text-amber-400">📐 ArchiDraft AI Assistant</h1>
-        <p class="text-xs text-gray-400 mt-1">Your Mobile Architectural Design & Drafting Partner</p>
+    <header>
+        <h1>📐 ArchiDraft AI Assistant</h1>
+        <div class="subtitle">Powered by Google Gemini</div>
     </header>
 
-    <!-- Settings Drawer (Hidden by default, used for entering API key securely on your phone) -->
-    <div id="settings-panel" class="bg-gray-800 p-4 border-b border-gray-700 text-sm hidden">
-        <label class="block text-gray-300 font-medium mb-1">OpenAI API Key:</label>
-        <input id="api-key-input" type="password" class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400" placeholder="sk-...">
-        <p class="text-xs text-gray-500 mt-1">Your key is stored safely only on your phone's browser storage.</p>
+    <div id="settings-panel">
+        <label style="display:block; margin-bottom:5px; font-weight:bold;">Gemini API Key:</label>
+        <input id="api-key-input" type="password" placeholder="AIzaSy...">
+        <p style="font-size:0.75rem; color:#9ca3af; margin: 5px 0 0 0;">Get a free key from Google AI Studio. Stored locally on your phone.</p>
     </div>
 
-    <!-- Main Output Area -->
-    <main class="flex-1 p-4 overflow-y-auto max-w-2xl mx-auto w-full space-y-4" id="chat-output">
-        <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-sm">
-            <p class="text-amber-400 font-bold mb-1">System ready</p>
-            <p class="text-sm text-gray-300">Tap the ⚙️ icon below to input your API key. Once added, ask for sketch help, perspective steps, or concept alternatives!</p>
+    <main id="chat-output">
+        <div class="card">
+            <p style="color:#fbbf24; font-weight:bold; margin-top:0;">System Ready</p>
+            <p style="font-size:0.875rem; margin-bottom:0;">Paste your Gemini key below. Then tap a tool shortcut or type a drafting question!</p>
         </div>
     </main>
 
-    <!-- Quick Tool Suggestions Menu -->
-    <div class="px-4 py-2 max-w-2xl mx-auto w-full overflow-x-auto flex space-x-2 text-xs whitespace-nowrap scrollbar-none">
-        <button onclick="quickPrompt('Help me draw a 2-point perspective house step-by-step')" class="bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-full px-3 py-1 text-gray-300 transition">🏠 Perspective House</button>
-        <button onclick="quickPrompt('Give me 3 minimalist concept alternatives for a small urban café')" class="bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-full px-3 py-1 text-gray-300 transition">☕ Café Concepts</button>
-        <button onclick="quickPrompt('What are common drafting mistakes when drawing a residential floor plan section?')" class="bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-full px-3 py-1 text-gray-300 transition">⚠️ Plan Mistakes</button>
+    <div class="pill-container">
+        <button onclick="quickPrompt('Help me draw a 2-point perspective house step-by-step')" class="pill">🏠 Perspective House</button>
+        <button onclick="quickPrompt('Give me 3 minimalist concept alternatives for a small urban café')" class="pill">☕ Café Concepts</button>
+        <button onclick="quickPrompt('What are common drafting mistakes when drawing a residential floor plan section?')" class="pill">⚠️ Plan Mistakes</button>
     </div>
 
-    <!-- Input Action Bar -->
-    <footer class="bg-gray-800 border-t border-gray-700 p-3 sticky bottom-0">
-        <div class="max-w-2xl mx-auto flex items-center space-x-2">
-            <button onclick="toggleSettings()" class="bg-gray-700 hover:bg-gray-600 text-lg p-2 rounded-lg transition" title="Settings">⚙️</button>
-            <input id="user-input" type="text" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white placeholder-gray-400 focus:outline-none focus:border-amber-400 text-sm" placeholder="Ask for architectural guidance...">
-            <button onclick="sendMessage()" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2.5 rounded-lg transition text-sm">Send</button>
+    <footer>
+        <div class="input-group">
+            <button onclick="toggleSettings()" class="btn-settings">⚙️</button>
+            <input id="user-input" type="text" placeholder="Ask for architectural guidance...">
+            <button onclick="sendMessage()" class="btn">Send</button>
         </div>
     </footer>
 
-    <!-- App Engine Script Logic -->
     <script>
-        // System instructions to match your layout/criticism behavior goals
         const SYSTEM_PROMPT = `You are an expert architecture drawing and design assistant. Always respond in this structured format:
 1) What I understand: (brief recap)
 2) Clarifying questions (only if needed): (max 3)
 3) Design/drawing guidance: (step-by-step instructions)
 4) Checklist: (drawing/labeling/materials metrics)
 5) Common mistakes + fixes:
-6) Next action: (one concrete task the user can do immediately on paper or app)`;
+6) Next action: (one concrete task user can do right now)`;
 
-        // Load saved API key on startup
         window.onload = () => {
-            const savedKey = localStorage.getItem('archi_api_key');
+            const savedKey = localStorage.getItem('gemini_api_key');
             if(savedKey) document.getElementById('api-key-input').value = savedKey;
         };
 
         function toggleSettings() {
             const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('hidden');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         }
 
         function quickPrompt(text) {
@@ -82,70 +90,64 @@
 
             if (!prompt) return;
             if (!apiKey) {
-                alert("Please tap the ⚙️ icon and enter your OpenAI API key first.");
+                alert("Please enter your Gemini API key first.");
                 return;
             }
 
-            // Save key for future convenience
-            localStorage.setItem('archi_api_key', apiKey);
+            localStorage.setItem('gemini_api_key', apiKey);
             inputField.value = '';
 
-            // Render User Prompt block
             outputArea.innerHTML += `
-                <div class="bg-gray-700/50 border border-gray-600 rounded-lg p-4 shadow-sm self-end">
-                    <p class="text-xs text-amber-400 font-semibold mb-1">You</p>
-                    <p class="text-sm text-gray-100">${prompt}</p>
+                <div class="user-msg">
+                    <p style="font-size:0.75rem; color:#fbbf24; margin:0 0 4px 0;">You</p>
+                    <p style="margin:0; font-size:0.875rem;">${prompt}</p>
                 </div>
             `;
             
-            // Render Loading Placeholder
             const loadingId = 'loading-' + Date.now();
             outputArea.innerHTML += `
-                <div id="${loadingId}" class="bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-sm animate-pulse">
-                    <p class="text-xs text-gray-400">Architect Assistant is calculating...</p>
+                <div id="${loadingId}" class="card">
+                    <p style="font-size:0.75rem; color:#9ca3af; margin:0;">Architect Assistant is processing...</p>
                 </div>
             `;
             outputArea.scrollTop = outputArea.scrollHeight;
 
             try {
-                // Call standard openAI endpoints directly via frontend securely using user's own token
-                const response = await fetch('https://openai.com', {
+                // Call Google Gemini API directly (Allows CORS requests seamlessly from browsers)
+                const url = `https://googleapis.com{apiKey}`;
+                
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'gpt-4o-mini', // Lightweight, incredibly fast, and very smart with design schemas
-                        messages: [
-                            { role: 'system', content: SYSTEM_PROMPT },
-                            { role: 'user', content: prompt }
-                        ],
-                        temperature: 0.7
+                        contents: [{
+                            parts: [{ text: SYSTEM_PROMPT + "\n\nUser Question: " + prompt }]
+                        }]
                     })
                 });
 
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                if (data.error) {
-                    throw new Error(data.error.message);
+                if (!response.ok) {
+                    throw new Error(data.error?.message || "API Error");
                 }
 
-                // Render formatted AI markdown block response
-                const aiReply = data.choices[0].message.content.replace(/\n/g, '<br>');
+                let aiReply = data.candidates[0].content.parts[0].text;
+                aiReply = aiReply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
                 outputArea.innerHTML += `
-                    <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-sm">
-                        <p class="text-xs text-amber-400 font-semibold mb-2">📐 ArchiDraft AI</p>
-                        <div class="text-sm text-gray-200 leading-relaxed">${aiReply}</div>
+                    <div class="card">
+                        <p style="font-size:0.75rem; color:#fbbf24; margin:0 0 8px 0;">📐 ArchiDraft AI</p>
+                        <div style="font-size:0.875rem; line-height:1.5;">${aiReply}</div>
                     </div>
                 `;
 
             } catch (err) {
-                document.getElementById(loadingId).remove();
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
                 outputArea.innerHTML += `
-                    <div class="bg-red-900/50 border border-red-700 rounded-lg p-4 shadow-sm text-red-200 text-sm">
-                        <strong>Error connecting to AI engine:</strong> ${err.message}
+                    <div class="card" style="border-color:#ef4444; color:#fca5a5;">
+                        <strong>Error:</strong> ${err.message}
                     </div>
                 `;
             }
@@ -153,5 +155,5 @@
         }
     </script>
 </body>
-          </html>
-      
+                </html>
+                
